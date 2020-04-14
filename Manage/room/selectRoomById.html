@@ -1,7 +1,14 @@
 
+<!--根据ID-->
+<!--根据房间-->
+<!--根据楼层-->
+<!--根据房间类型-->
+<!--根据床型-->
 
-<!--根据ID选择客房-->
+
 <!--根据ID删除客房-->
+<!--根据ID回收客房-->
+<!--根据ID修改客房-->
 <!DOCTYPE html>
 <html lang="en">
 <!--  订单系统 -->
@@ -68,203 +75,8 @@
 
     <!-- Page level custom scripts -->
     <script src="../../JS/demo/datatables-demo.js"></script>
-
+    <script src="../../JS/selectRoomByID.js"></script>
     <script>
-
-        function setText(element){
-            let id = element.id;
-            let a = document.getElementById(id);
-            let b = document.getElementById("showControlText");
-            b.innerHTML = a.innerHTML;
-        }
-
-
-        function checkRoomID(element){
-            //ajax请求数据
-            // url = "../../hotel_ai/room/selectRoomList"
-            //test url = "../../data.json"
-            //解析json数组,直接data[i]操作即可
-            //根据不同的ID执行不同的选择.
-            let queryText = document.getElementById("queryText").value;
-            let l = document.getElementById("showControlText").innerHTML;
-            let url = "../../hotel_ai/room/selecRoomById";  //默认showControlText
-            console.log(l);
-            if (l === "选择搜索类型"){
-                alert("请先选择搜索类型");
-                return false;
-            }
-            var json = {};
-            if (l === "id"){
-                json.id = Number(queryText);
-            }
-            else if (l === "房间"){
-                url = "../../hotel_ai/room/searchRoom";
-                json.roomNumber = Number(queryText);
-            }else if (l === "楼层"){
-                url = "../../hotel_ai/room/selectRoomListByRoomFloor";
-                json.page = 1;
-                json.limit = 50;
-                json.roomFloor = Number(queryText);
-            }else if (l === "房间类型"){
-                url = "../../hotel_ai/room/searchRoom";
-                json.page = 1;
-                json.limit = 50;
-                json.roomType = queryText;
-            }else if (l === "床型"){
-                url = "../../hotel_ai/room/searchRoom";
-                json.page = 1;
-                json.limit = 50;
-                json.roomBedType = queryText;
-            }
-            url = url + ".jsp";
-            $.post(url,json,function(data,status) {
-                console.log(status);
-                //console.log($.parseJSON(data));
-                if (status === 200 || status === "success"){
-                    //返回成功了,解析json数据
-                    //需要删除之前选择的元素
-                    $("tbody").empty(); //然后才能正常添加
-                    var i = 0;
-                    for(i=0;i<data.length;i++){
-                        let tr=document.createElement("tr");
-                        let id=document.createElement("td");
-                        let roomFloor=document.createElement("td");
-                        let roomNumber=document.createElement("td");
-                        let roomPicture=document.createElement("td");
-                        let roomInfo=document.createElement("td");
-                        let roomType=document.createElement("td");
-                        let roomMax=document.createElement("td");
-                        let roomArea=document.createElement("td");
-                        let roomBedType=document.createElement("td");
-                        let roomPrice=document.createElement("td");
-                        let createrId=document.createElement("td");
-                        let createrUsername=document.createElement("td");
-                        let createTime=document.createElement("td");
-                        let modifyId=document.createElement("td");
-                        let modifyUsername=document.createElement("td");
-                        let modifyTime=document.createElement("td");
-                        let roomStates=document.createElement("td");
-                        let existStates=document.createElement("td");
-                        //添加
-                        id.innerText = data[i].id;
-                        roomFloor.innerText = data[i].roomFloor;
-                        roomNumber.innerText = data[i].roomNumber;
-                        roomPicture.innerText = data[i].roomPicture;
-                        roomInfo.innerText = data[i].roomInfo;
-                        roomType.innerText = data[i].roomType;
-                        roomMax.innerText = data[i].roomMax;
-                        roomArea.innerText = data[i].roomArea;
-                        roomBedType.innerText = data[i].roomBedType;
-                        roomPrice.innerText = data[i].roomPrice;
-                        createrId.innerText = data[i].createrId;
-                        createrUsername.innerText = data[i].createrUsername;
-                        createTime.innerText = data[i].createTime;
-                        modifyId.innerText = data[i].modifyId;
-                        modifyUsername.innerText = data[i].modifyUsername;
-                        modifyTime.innerText = data[i].modifyTime;
-                        roomStates.innerText = data[i].roomStates;
-                        existStates.innerText = data[i].existStates;
-
-                        //删除的操作,a标签.
-                        let controlTD = document.createElement('td'); //根据id属性获取tr标签
-
-                        let controlA = document.createElement('a'); //创建td标签
-                        controlA.setAttribute('href','#'); //设置标签属性aa=‘td_aa’
-                        controlA.setAttribute('id',"delete-" + data[i].id); //设置标签属性aa=‘td_aa’
-                        controlA.innerText = '删除'; //设置td标签文本值为'哈哈哈哈'
-                        controlA.classList.add("controlAA");
-                        let setID = "delete-" + data[i].id;
-                        controlA.addEventListener("click",function () {
-                            check(setID);
-                        });
-                        //controlTD.innerText ='操作';
-
-
-
-
-                        let controlB = document.createElement('a'); //创建td标签
-                        controlB.innerText = '修改'; //设置td标签文本值为'哈哈哈哈'
-                        controlB.classList.add("controlAA");
-                        controlB.setAttribute('id',"update-" + data[i].id); //设置标签属性aa=‘td_aa’
-                        controlB.setAttribute('href','#'); //设置标签属性aa=‘td_aa’
-                        let setIDB = "update-" + data[i].id;
-                        controlB.addEventListener("click",function () {
-                            update(setIDB);
-                        });
-
-                        let controlC = document.createElement('a'); //创建td标签
-                        controlC.innerText = '回收'; //设置td标签文本值为'哈哈哈哈'
-                        controlC.classList.add("controlAA");
-                        controlC.setAttribute('id',"recovery-" + data[i].id); //设置标签属性aa=‘td_aa’
-                        controlC.setAttribute('href','#'); //设置标签属性aa=‘td_aa’
-                        let setIDC = "update-" + data[i].id;
-                        controlC.addEventListener("click",function () {
-                            recovery(setIDC);
-                        });
-
-
-                        controlTD.append(controlA);
-                        controlTD.append(controlB);
-                        controlTD.append(controlC);
-                        tr.append(roomFloor,roomNumber,roomPicture,roomInfo,roomType,
-                            roomMax,roomArea,roomBedType,roomPrice,createrId,createrUsername,
-                            createTime,modifyId,modifyUsername,modifyTime,
-                            roomStates,existStates,controlTD);
-                        $("tbody").append(tr);
-                    }
-                }
-            })
-
-        }
-        function check(element){
-            //根据ID删除元素
-            let id = element.split("-")[1];
-            //提示用户是否要删除
-            let res=confirm("你确定要删除这个房间吗?"); //在页面上弹出对话框
-            if(res ===true){
-                //删除直接回收和释放.
-                $.post("../../hotel_ai/room/deleteRoom", {
-                    "id": id
-                },function(data,status) {
-                    if (status === "success" || status === 200){
-                        alert("删除成功");
-                    }
-                });
-            }
-            else{
-
-            }
-        }
-        function update(element){
-            let id = element.split("-")[1];
-            //提示用户是否要删除
-            let res=confirm("你确定要修改这个房间吗?"); //在页面上弹出对话框
-            if(res ===true){
-                window.location.href= "updateRoom.html?ID=" + id;
-            }
-            else{
-
-            }
-        }
-        function recovery(element){
-            let id = element.split("-")[1];
-            //提示用户是否要删除
-            let res=confirm("你确定要回收这个房间吗?"); //在页面上弹出对话框
-            if(res ===true){
-                $.post("../../hotel_ai/room/recycleRoom", {
-                    "id": id
-                },function(data,status) {
-                    if (status === "success" || status === 200){
-                        alert("回收成功");
-                        return false;
-                    }
-                });
-            }
-            else{
-
-            }
-        }
-
     </script>
 </head>
 

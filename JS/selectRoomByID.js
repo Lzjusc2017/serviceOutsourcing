@@ -4,12 +4,7 @@
 
 $(document).ready(function(){
     //解析json数组,直接data[i]操作即可
-    let url = "../../hotel_ai/product/selectProductList";
-    url = "../../new.json";
-    let json = {};
-    json.page = 1;
-    json.limit = 50;
-    setAjaxData(url,json);
+    console.log("选择商品通过id");
 });
 /**
  *  @param element 标签类型
@@ -28,29 +23,35 @@ function setText(element){
 function check(element){
     let queryText = document.getElementById("queryText").value;
     let l = document.getElementById("showControlText").innerHTML;
-    let url = "../../hotel_ai/product/";  //默认showControlText
+    let url = "../../hotel_ai/room/";  //默认showControlText
     console.log(l);
     let json = {};
     if (l === "选择搜索类型"){
         alert("请先选择搜索类型");
         return false;
     }
-    if (l === "商品名称"){
-        url = url + "selecProductByProductName";
-        json.productName = queryText;
+    if (l === "id"){
+        json.id = Number(queryText);
     }
-    else if (l === "热度"){
-        url = url + "selectProductListByPopularity";
+    else if (l === "房间"){
+        url = url + "searchRoom";
+        json.roomNumber = Number(queryText);
+    }
+    else if (l === "楼层"){
+        url = url + "selectRoomListByRoomFloor";
         json.page = 1;
         json.limit = 50;
-    }else if (l === "分类"){
-        url = url + "selectProductListByProductType";
+        json.roomFloor = Number(queryText);
+    }else if (l === "房间类型"){
+        url = url + "searchRoom";
         json.page = 1;
         json.limit = 50;
-        json.productType = queryText;
-    }else if (l === "id"){
-        url = url + "selectProductById";
-        json.id = queryText;
+        json.roomType = queryText;
+    }else if (l === "床型"){
+        url = url + "searchRoom";
+        json.page = 1;
+        json.limit = 50;
+        json.roomBedType = queryText;
     }
     url = url + ".jsp";
     console.log("url:" + url);
@@ -76,8 +77,8 @@ function setAjaxData(url,json){
                     tr.append(a);
                 }
                 //添加操作标签
-                let label= ["修改","删除","回收"];
-                let labels = ["update" , "delete","recycleProduct"];
+                let label= ["删除","修改","回收"];
+                let labels = ["delete" , "update","recovery"];
                 for(let j = 0;j<label.length; j++){
                     let a = document.createElement("a");
                     a.innerText = label[j];
@@ -104,14 +105,14 @@ function setAjaxData(url,json){
 function mylocation(element){
     let type = element.split("-")[0];
     let id = element.split("-")[1];
-    let url = "../../hotel_ai/product/";
+    let url = "../../hotel_ai/room/";
     if (type==="update"){
-        url = "updateProduct.html?ID=" + id;
+        url = "updateRoom.html?ID=" + id;
         //跳转到修改的页面.
         window.location.href= url;
     }else if (type === "delete"){
-        url = url + "deleteProduct.jsp";
-        let res=confirm("你确定要删除这个商品吗?"); //在页面上弹出对话框
+        url = url + "deleteRoom.jsp";
+        let res=confirm("你确定要删除这个房间吗?"); //在页面上弹出对话框
         if(res ===true){
             //删除直接回收和释放.
             $.post(url, {
@@ -119,20 +120,33 @@ function mylocation(element){
             },function(data,status) {
                 if (status === "success" || status === 200){
                     alert("删除成功");
+                }else{
+                    alert("删除失败")
                 }
             });
         }
-    }else if (type === "recycleProduct"){
-        url = url + "recycleProduct.jsp";
+    }else if (type === "recovery"){
+        url = url + "recycleRoom.jsp";
+        let res=confirm("你确定要回收这个房间吗?"); //在页面上弹出对话框
         if(res ===true){
             //删除直接回收和释放.
-            $.post(url,{
-                "id": id
-            },function(data,status) {
+            $.post(url, {"id": id},function(data,status) {
                 if (status === "success" || status === 200){
                     alert("回收成功");
+                    return false;
+                }else{
+                    alert("回收失败");
                 }
             });
+        }
+    }else if (type === "update"){
+        let res=confirm("你确定要修改这个房间吗?"); //在页面上弹出对话框
+        if(res ===true){
+            window.location.href= "updateRoom.html?ID=" + id;
+        }else{
+            alert(
+                "修改失败"
+            );
         }
     }
 }

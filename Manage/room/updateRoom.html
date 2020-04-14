@@ -1,6 +1,7 @@
 
 
 <!--房间更新-->
+<!--房间添加-->
 <!DOCTYPE html>
 <html lang="en">
 <!--  订单系统 -->
@@ -36,90 +37,24 @@
             margin-top: 30px;
         }
     </style>
+    <script src="../../vendor/jquery/jquery.min.js"></script>
+    <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="../../JS/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="../../JS/demo/datatables-demo.js"></script>
+    <script type="text/javascript" src="../../JS/updateRoom.js"></script>
     <script>
-        let queryID;
-        window.onload=function () {
-            queryID = GetQueryString("ID");
-            alert(queryID);
-            updateExitValue(queryID);
-        }
-        function updateExitValue(element){
-            $.post("../../new.json",{
-                "id":element
-            },function(data,status) {
-                console.log(status);
-                console.log(data);
-                if (status === 200 || status === "success"){
-                    //已经有的value
-                    let roomFloor = document.getElementById("roomFloor");
-                    let roomNumber = document.getElementById("roomNuber");
-                    let roomPicture = document.getElementById("roomPicture");
-                    let roomInfo = document.getElementById("roomInfo");
-                    let roomType = document.getElementById("roomType");
-                    let roomMax = document.getElementById("roomMax");
-                    let roomArea = document.getElementById("roomArea");
-                    let roomBedType = document.getElementById("roomBedType");
-                    let roomPrice = document.getElementById("roomPrice");
 
-                    //返回的数据解析
-                    let i = 0;
-                    console.log("修改页面");
-                    console.log(data.length);
-                    for(i=0;i<data.length; i++){
-                        roomFloor.value = data[i].roomFloor;
-                        roomNumber.value = data[i].roomNuber;
-                        roomPicture.value = data[i].roomPicture;
-                        roomInfo.value = data[i].roomInfo;
-                        roomType.value = data[i].roomType;
-                        roomMax.value = data[i].roomMax;
-                        roomArea.value = data[i].roomArea;
-                        roomBedType.value = data[i].roomBedType;
-                        roomPrice.value = data[i].roomPrice;
-                    }
-                }
-            });
-        }
-
-
-        function GetQueryString(name)
-        {
-            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-            var r = window.location.search.substr(1).match(reg);
-            if(r!=null)return  unescape(r[2]); return null;
-        }
-        function updateRoom(){
-
-            let roomFloor = document.getElementById("roomFloor").value;
-            let roomNumber = document.getElementById("roomNuber").value;
-            let roomPicture = document.getElementById("roomPicture").value;
-            let roomInfo = document.getElementById("roomInfo").value;
-            let roomType = document.getElementById("roomType").value;
-            let roomMax = document.getElementById("roomMax").value;
-            let roomArea = document.getElementById("roomArea").value;
-            let roomBedType = document.getElementById("roomBedType").value;
-            let roomPrice = document.getElementById("roomPrice").value;
-            roomNumber = Number(roomNumber);
-            console.log("点击确定");
-
-            $.post("../data.json",{
-                "id":queryID,
-                "roomFloor":roomFloor,
-                "roomNuber":roomNumber,
-                "roomPicture":roomPicture,
-                "roomInfo":roomInfo,
-                "roomType":roomType,
-                "roomMax":roomMax,
-                "roomArea":roomArea,
-                "roomBedType":roomBedType,
-                "roomPrice":roomPrice
-            }, function(data,status){
-                var obj = JSON.parse(data);
-                if (status === 200){
-                    alert("修改成功");
-
-                }
-            });
-        }
     </script>
 </head>
 
